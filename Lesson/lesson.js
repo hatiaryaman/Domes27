@@ -106,6 +106,10 @@ function newTextArea() {
                     currentElem.focus()
                     setCursor(currentElem.textContent.length)
                 }
+            } else if (e.key == "Enter") {
+                e.preventDefault()
+                
+                newTextArea()
             }
         })
     }
@@ -224,7 +228,7 @@ function newImage(image) {
     imgContainer.style.border = "1px solid #000"
 
     let imageHold = document.createElement('img')
-    imageHold.setAttribute('src', URL.createObjectURL(image))
+    imageHold.setAttribute('src', image)
 
     imgContainer.appendChild(imageHold)
 
@@ -246,9 +250,14 @@ function newImage(image) {
 
     currentElem = imgContainer
 
-    newTextArea()
+    if (secondhalf != "") {
+        newTextArea()
 
-    currentElem.textContent = secondhalf
+        currentElem.textContent = secondhalf
+
+        currentElem = imgContainer
+        currentElem.focus()
+    }
 
     // Readjusting image size
     if (editable) {
@@ -277,17 +286,13 @@ function newImage(image) {
             dragElem = imgContainer
         })
 
-        imgContainer.addEventListener('mouseup', () => {
-            if (currentElem == imgContainer) {
-                
-            }
-        })
-
         document.addEventListener('mouseup', () => {
             if (dragElem != null) {
                 dragElem = null;
             }
         })
+
+        //imgContainer.addEventListener('keydown' )
     }
 }
 
@@ -338,7 +343,7 @@ function handleFile() {
     fileGet = inp
 
     for (let i = 0; i < images.length; i++) {
-        newImage(images[i])
+        newImage(URL.createObjectURL(images[i]))
     }
 
     //content.style.height = "max(100%, fit-content)";
@@ -421,6 +426,21 @@ function newLatex() {
         content.appendChild(math)
         currentElem = math
         currentElem.focus()
+    }
+
+    if (editable) {
+        math.addEventListener('keydown', (e) => {
+            if (e.key == "Enter") {
+                newTextArea()
+            }
+        })
+
+        math.addEventListener('click', () => {
+            currentElem = math
+            currentElem.focus()
+        })
+    } else {
+        math.readonly = 'readonly';
     }
 }
 
